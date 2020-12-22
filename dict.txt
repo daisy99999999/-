@@ -1,0 +1,71 @@
+在线词典分析
+1. 需求分析
+   确定客户端功能和使用流程，
+       客户端同时操作
+       客户端登录
+       客户端登录页面和查询页面切换
+       客户端查询单词
+       客户端查询查词记录
+       客户端退出
+       服务端接受客户端登录请求
+       服务端发单词词义
+       服务端记录用户浏览记录
+
+2. 技术分析
+   * 使用什么并发技术
+    进程并发process  /  IO并发
+
+   * 使用什么网络
+    tcp 传输
+    单词传输，单词示意传输，浏览记录传输
+
+   * 两个界面如何相互跳转 （demo示例）
+   * 存储 --》 使用 dict数据库
+     words 表   id  word  mean
+     user  表  id  name  password
+     history 表 id word time user_name
+
+3. 功能划分，封装的设计
+封装设计：类
+客户端
+  图形化界面
+  登录
+  查询单词
+  查询浏览记录
+  退出
+
+4. 通信协议设计
+             请求类型    数据参量
+    登录       L        name ,pwd
+    注册       R        name ,pwd
+    查询单词    Q        word ,name
+    查询记录    H        name
+    退出       E
+  服务端给响应:
+  成功 OK
+  失败 no
+
+5. 具体模块逻辑分析
+登录：
+客户端： 1、发送请求
+        2、接受等待响应  ok 跳转页面
+                       no 重新登录
+服务端： 1、接受客户端登录请求
+        2、判断昵称是否重复，
+            不重复，登录成功，存储姓名和密码，发送ok 到客户端
+            重复，登录失败，发送no 到客户端
+
+   框架搭建
+
+6. 优化完善
+
+create table users(id int primary key auto_increment,
+name varchar(32) not null,
+pwd varchar(32) not null,unique name(name));
+
+
+create table history(id int primary key auto_increment,
+word varchar(32) not null ,
+times datetime default now() ,
+user_name varchar(32),
+foreign key(user_name) references users(name));
